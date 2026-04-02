@@ -8,7 +8,7 @@
       <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/cmake-build-debug/my_database.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="projectDB.db" uuid="5d5499b6-0bbc-4f79-9cdb-6b74fb76a574">
+    <data-source source="LOCAL" name="projectDB.db" uuid="5e058689-1e41-496f-8e11-5d1c3305d192">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>

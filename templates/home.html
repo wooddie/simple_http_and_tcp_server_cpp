@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+
+<h1>Home</h1>
+
+<form action="/generate" method="POST">
+    <input type="hidden" name="user_id" value="{{user_id}}">
+
+    <select name="type">
+        <option value="image">Image</option>
+        <option value="video">Video</option>
+    </select><br><br>
+
+    <textarea name="prompt"></textarea><br><br>
+
+    <button type="submit">Create</button>
+</form>
+
+<h3>Your requests:</h3>
+
+{{requests}}
+
+</body>
+</html>
