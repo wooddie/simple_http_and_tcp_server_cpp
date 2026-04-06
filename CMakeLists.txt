@@ -48,8 +48,12 @@ target_link_libraries(http_server
         Qt6::Core
 )
 
-# Создай отдельный исполняемый файл (App Bundle для macOS)
+# Создай отдельный исполняемый файл
 add_executable(admin MACOSX_BUNDLE admin.cpp)
 
-# Привяжи библиотеки
-target_link_libraries(admin PRIVATE Qt6::Widgets Qt6::Sql)
+# Привяжи библиотеки (ОБЯЗАТЕЛЬНО добавьте Qt6::Network)
+target_link_libraries(admin PRIVATE
+        Qt6::Widgets
+        Qt6::Sql
+        Qt6::Network
+)

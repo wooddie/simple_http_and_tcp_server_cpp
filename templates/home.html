@@ -1,27 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <title>Мой кабинет</title>
 </head>
 <body>
 
-<h1>Home</h1>
+<h1>Кабинет</h1>
 
 <form action="/generate" method="POST">
     <input type="hidden" name="user_id" value="{{user_id}}">
 
     <select name="type">
-        <option value="image">Image</option>
-        <option value="video">Video</option>
+        <option value="image">Изображение</option>
+        <option value="video">Видео</option>
     </select><br><br>
 
-    <textarea name="prompt"></textarea><br><br>
+    <label>
+        <textarea name="prompt"></textarea>
+    </label><br><br>
 
-    <button type="submit">Create</button>
+    <button type="submit">Создать</button>
 </form>
 
-<h3>Your requests:</h3>
+<h3>Ваши запросы:</h3>
 
 {{requests}}
 
