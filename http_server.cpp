@@ -247,16 +247,16 @@ int main() {
         }
 
         // 2. Проверка на пустоту типа контента
-        if (type != "сурет" && type != "бейне") {
+        if (type != "Изображение" && type != "Видео") {
             res.status = 400;
-            res.set_content("Выберите тип контента (сурет/бейне)", "text/plain; charset=utf-8");
+            res.set_content("Выберите тип контента (Изображение/Видео)", "text/plain; charset=utf-8");
             return;
         }
 
         // Если всё ок — пишем в базу
         sqlite3_stmt *stmt;
         const char *sql = "INSERT INTO generation_requests(user_id, content_type, prompt_text, status, created_at) "
-                "VALUES (?, ?, ?, 'жаңа', datetime('now'))";
+                "VALUES (?, ?, ?, 'новый', datetime('now'))";
 
         if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
             sqlite3_bind_int(stmt, 1, std::stoi(user_id));

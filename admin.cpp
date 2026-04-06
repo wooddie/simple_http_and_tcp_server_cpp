@@ -22,7 +22,7 @@ public:
 
         manager = new QNetworkAccessManager(this);
         model = new QStandardItemModel(this);
-        model->setHorizontalHeaderLabels({"ID", "Date", "Name", "Type", "Prompt", "Status"});
+        model->setHorizontalHeaderLabels({"ID", "Дата", "ФИО", "ТИП", "Запрос", "Статус"});
 
         view = new QTableView();
         view->setModel(model);
@@ -43,8 +43,8 @@ public:
         layout->addLayout(btnLayout);
 
         connect(btnRefresh, &QPushButton::clicked, this, &AdminPanel::loadData);
-        connect(btnApprove, &QPushButton::clicked, [this](){ updateStatus("approved"); });
-        connect(btnReject, &QPushButton::clicked, [this](){ updateStatus("rejected"); });
+        connect(btnApprove, &QPushButton::clicked, [this](){ updateStatus("Принято"); });
+        connect(btnReject, &QPushButton::clicked, [this](){ updateStatus("Отклонено"); });
 
         loadData();
     }
