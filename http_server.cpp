@@ -218,20 +218,24 @@ int main() {
         sqlite3_bind_int(stmt, 1, std::stoi(user_id));
 
         while (sqlite3_step(stmt) == SQLITE_ROW) {
-            std::string s = (char *) sqlite3_column_text(stmt, 2); // 'pending', 'approved', etc.
-            std::string displayStatus = (s == "pending")
-                                            ? "Жаңа (Новый)"
-                                            : (s == "approved")
-                                                  ? "Мақұлданды"
-                                                  : "Қабылданбады";
-            std::string t = (char *) sqlite3_column_text(stmt, 0);
-            std::string p = (char *) sqlite3_column_text(stmt, 1);
+            // 1. Получаем данные из БД
+            std::string type   = (const char *) sqlite3_column_text(stmt, 0);
+            std::string prompt = (const char *) sqlite3_column_text(stmt, 1);
+            std::string status = (const char *) sqlite3_column_text(stmt, 2); // 'pending', 'approved', 'rejected'
 
-            // Добавляем HTML-обертку с классом для CSS
-            requests += "<div class='request-card status-" + s + "'>";
-            requests += "<strong>" + t + "</strong><br>";
-            requests += "<span>" + p + "</span><br>";
-            requests += "<i>Статус: " + s + "</i>";
+            // 2. Локализация статуса для отображения пользователю
+            std::string statusText = (status == "pending") ? "Жаңа" :
+                                     (status == "approved") ? "Мақұлданды" : "Қабылданбады";
+
+            // 3. Формируем карточку под новый CSS
+            requests += "<div class='request-card status-" + status + "'>";
+            requests += "  <div class='meta'>";
+            requests += "    <span class='type-badge'>" + type + "</span>";
+            requests += "    <span class='status-badge badge-" + status + "'>" + statusText + "</span>";
+            requests += "  </div>";
+            requests += "  <div class='prompt'>" + prompt + "</div>";
+            // Если в БД есть колонка с датой, можно добавить и её:
+            // requests += "  <div class='date'>Бүгін, 12:40</div>";
             requests += "</div>";
         }
 

@@ -33,6 +33,20 @@ const translations = {
     }
 };
 
+function showSection(id) {
+    // Скрываем все секции
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+    // Убираем активный класс у кнопок
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+    // Показываем нужную секцию
+    const target = document.getElementById(id);
+    if (target) target.classList.add('visible');
+
+    // Делаем нажатую кнопку активной
+    event.currentTarget.classList.add('active');
+}
+
 function setLanguage(lang) {
     localStorage.setItem('selectedLang', lang);
 

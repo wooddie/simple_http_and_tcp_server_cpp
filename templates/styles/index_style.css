@@ -1,129 +1,153 @@
+/* Переменные из home_style.css для консистентности */
 :root {
-    --primary: #2c3e50;
-    --accent: #3498db;
-    --bg: #f4f7f6;
-    --error: #e74c3c;
+    --purple-light: #EEEDFE;
+    --purple-mid:   #7F77DD;
+    --purple-main:  #534AB7;
+    --purple-dark:  #3C3489;
+    --bg:           #f4f6fb;
+    --surface:      #ffffff;
+    --border:       rgba(0, 0, 0, 0.08);
+    --text-primary: #1a1a2e;
+    --text-muted:   #6b7280;
+    --radius-lg:    14px;
+    --radius-md:    8px;
 }
 
 body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: var(--bg);
-    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    margin: 0;
 }
 
 .container {
     width: 100%;
     max-width: 390px;
-    background: white;
-    padding: 30px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    border-radius: 15px;
-    box-sizing: border-box;
+    background: var(--surface);
+    padding: 32px 24px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(83, 74, 183, 0.08);
+    border: 1px solid var(--border);
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out forwards;
 }
 
 h1 {
-    text-align: center;
-    color: var(--primary);
     font-size: 28px;
-    margin-bottom: 5px;
+    font-weight: 800;
+    text-align: center;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+}
+
+h1 span {
+    color: var(--purple-main);
 }
 
 .subtitle {
     text-align: center;
-    color: #7f8c8d;
+    color: var(--text-muted);
     font-size: 14px;
-    margin-bottom: 25px;
+    margin-bottom: 32px;
 }
 
 h2 {
-    font-size: 18px;
-    color: var(--primary);
-    margin-top: 20px;
-    border-left: 4px solid var(--accent);
-    padding-left: 10px;
-    margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+h2::before {
+    content: '';
+    width: 4px;
+    height: 16px;
+    background: var(--purple-main);
+    border-radius: 2px;
 }
 
 form {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
 }
 
 input {
     width: 100%;
-    padding: 14px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    box-sizing: border-box;
-    transition: border-color 0.3s;
+    padding: 12px 16px;
+    background: #fafafa;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    transition: all 0.2s;
+    outline: none;
 }
 
 input:focus {
-    outline: none;
-    border-color: var(--accent);
+    border-color: var(--purple-mid);
+    background: var(--surface);
+    box-shadow: 0 0 0 3px rgba(127, 119, 221, 0.1);
 }
 
-button {
+button[type="submit"] {
     padding: 14px;
-    background-color: var(--primary);
+    background: var(--purple-main);
     color: white;
     border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
-    transition: background 0.3s;
-    margin-top: 5px;
+    transition: all 0.2s;
+    margin-top: 8px;
 }
 
-button:hover {
-    background-color: #34495e;
+button[type="submit"]:hover {
+    background: var(--purple-dark);
+}
+
+button[type="submit"]:active {
+    transform: scale(0.98);
 }
 
 .btn-lang {
-    width: auto;
-    padding: 5px 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 4px 12px;
     font-size: 12px;
-    background: #fff;
-    color: #333;
-    border: 1px solid #ccc;
-    margin-left: 5px;
+    font-weight: 600;
+    border-radius: 20px;
+    cursor: pointer;
+    color: var(--text-muted);
+}
+
+.btn-lang:hover {
+    background: var(--purple-light);
+    color: var(--purple-main);
 }
 
 .error-box {
-    color: var(--error);
+    color: #d93025;
     font-size: 13px;
     min-height: 18px;
-    white-space: pre-line;
+    margin-top: -4px;
 }
 
 hr {
-    margin: 30px 0;
     border: 0;
-    border-top: 1px solid #eee;
-}
-
-/* Анимация */
-.container {
-    opacity: 0;
-    /* forwards заставит элемент остаться видимым (opacity: 1) после конца анимации */
-    animation: fadeIn 1.2s ease-out forwards;
-    margin: auto; /* чтобы max-width 390px работал по центру */
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(30px); /* Увеличил замах для наглядности */
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }

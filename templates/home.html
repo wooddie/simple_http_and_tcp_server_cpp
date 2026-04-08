@@ -8,48 +8,49 @@
 </head>
 <body>
 
-<div class="container">
-    <div class="lang-switch" style="text-align: right; padding: 10px; background: #fff;">
-        <button onclick="setLanguage('kz')"
-                style="width: auto; padding: 5px 12px; cursor: pointer; border-radius: 4px; border: 1px solid #ccc;">KZ
-        </button>
-        <button onclick="setLanguage('ru')"
-                style="width: auto; padding: 5px 12px; cursor: pointer; border-radius: 4px; border: 1px solid #ccc;">RU
-        </button>
+<div class="app"> <header class="header">
+    <div class="header-top">
+        <div class="logo">Neuro<span>Art</span></div>
+        <div class="lang-btns">
+            <button onclick="setLanguage('kz')" class="lang-btn">KZ</button>
+            <button onclick="setLanguage('ru')" class="lang-btn">RU</button>
+        </div>
     </div>
 
     <div class="nav">
-        <a href="#new" data-key="nav_create">➕ Тапсырыс</a>
-        <a href="#list" data-key="nav_projects">📂 Жобалар</a>
-        <a href="/" data-key="nav_exit">🚪 Шығу</a>
+        <button class="nav-btn active" onclick="showSection('new')" data-key="nav_create">➕ Тапсырыс</button>
+        <button class="nav-btn" onclick="showSection('list')" data-key="nav_projects">📂 Жобалар</button>
     </div>
+</header>
 
-    <section id="new">
-        <h2 data-key="new_order">Жаңа тапсырыс</h2>
-        <div class="order-form">
-            <form action="/generate" method="POST">
-                <input type="hidden" name="user_id" value="{{user_id}}">
+    <main class="content">
+        <section id="new" class="section visible">
+            <div class="card">
+                <div class="card-title" data-key="new_order">Жаңа тапсырыс</div>
+                <form action="/generate" method="POST">
+                    <input type="hidden" name="user_id" value="{{user_id}}">
 
-                <label for="type" data-key="type_label">Контент түрі:</label>
-                <select name="type" id="type">
-                    <option value="Изображение" data-key="opt_img">Сурет</option>
-                    <option value="Видео" data-key="opt_vid">Бейне</option>
-                </select>
+                    <label for="type" data-key="type_label">Контент түрі</label>
+                    <select name="type" id="type">
+                        <option value="Изображение" data-key="opt_img">Сурет</option>
+                        <option value="Видео" data-key="opt_vid">Бейне</option>
+                    </select>
 
-                <label for="prompt" data-key="prompt_label">Сипаттама (Промпт):</label>
-                <textarea name="prompt" id="prompt" data-key="prompt_placeholder" required></textarea>
+                    <label for="prompt" data-key="prompt_label">Сипаттама</label>
+                    <textarea name="prompt" id="prompt" placeholder="..." required></textarea>
 
-                <button type="submit" data-key="btn_send">Жіберу</button>
-            </form>
-        </div>
-    </section>
+                    <button type="submit" data-key="btn_send">Жіберу</button>
+                </form>
+            </div>
+        </section>
 
-    <section id="list">
-        <h3 data-key="projects_title">Менің жобаларым</h3>
-        <div class="list-container">
-            {{requests}}
-        </div>
-    </section>
+        <section id="list" class="section">
+            <div class="section-title" data-key="projects_title">Менің жобаларым</div>
+            <div class="list-container">
+                {{requests}}
+            </div>
+        </section>
+    </main>
 </div>
 
 <script src="scripts/home_script.js"></script>
