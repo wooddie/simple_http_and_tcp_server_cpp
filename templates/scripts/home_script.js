@@ -33,28 +33,32 @@ const translations = {
     }
 };
 
+// Функция выхода должна быть глобальной
+function logout(event) {
+    event.preventDefault();
+    localStorage.clear();
+    window.location.replace("/");
+}
+
 function showSection(id) {
-    // Скрываем все секции
     document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
-    // Убираем активный класс у кнопок
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
 
-    // Показываем нужную секцию
     const target = document.getElementById(id);
     if (target) target.classList.add('visible');
 
-    // Делаем нажатую кнопку активной
-    event.currentTarget.classList.add('active');
+    // Исправлено: используем event.currentTarget более надежно
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+    }
 }
 
 function setLanguage(lang) {
     localStorage.setItem('selectedLang', lang);
 
-    // 1. Перевод элементов с data-key
     document.querySelectorAll('[data-key]').forEach(el => {
         const key = el.getAttribute('data-key');
         const translation = translations[lang][key];
-
         if (translation) {
             if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
                 el.placeholder = translation;
@@ -64,23 +68,17 @@ function setLanguage(lang) {
         }
     });
 
-    // 2. Перевод динамических статусов в карточках
+    // Обновляем статусы в карточках (ищем по классу .status-badge, как в C++ коде)
     document.querySelectorAll('.request-card').forEach(card => {
-        const statusLabel = card.querySelector('i');
+        const statusLabel = card.querySelector('.status-badge');
         if (statusLabel) {
-            // Проверяем класс карточки, чтобы понять статус
-            if (card.classList.contains('status-pending')) {
-                statusLabel.innerText = translations[lang].status_pending;
-            } else if (card.classList.contains('status-approved')) {
-                statusLabel.innerText = translations[lang].status_approved;
-            } else if (card.classList.contains('status-rejected')) {
-                statusLabel.innerText = translations[lang].status_rejected;
-            }
+            if (card.classList.contains('status-pending')) statusLabel.innerText = translations[lang].status_pending;
+            if (card.classList.contains('status-approved')) statusLabel.innerText = translations[lang].status_approved;
+            if (card.classList.contains('status-rejected')) statusLabel.innerText = translations[lang].status_rejected;
         }
     });
 }
 
-// Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('selectedLang') || 'kz';
     setLanguage(savedLang);

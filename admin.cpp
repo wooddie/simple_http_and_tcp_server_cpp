@@ -1,7 +1,7 @@
 #include <QApplication>
 #include <QTableView>
 #include <QStandardItemModel>
-#include <QHBoxLayout>   // Добавлено: для кнопок в ряд
+#include <QHBoxLayout>
 #include <QPushButton>
 #include <QNetworkReply>
 #include <QJsonArray>
