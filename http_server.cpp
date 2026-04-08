@@ -137,10 +137,10 @@ int main() {
         }
 
         // 2. Валидация ФИО (Кириллица + казахские буквы)
-        // Регулярка учитывает ҚңҒғҮүҰұӨөӘәІі
-        if (!std::regex_match(fio, std::regex("^[А-Яа-яЁёӘәІіҢңҒғҮүҰұҚқӨөҺһ\\s]+$"))) {
+        if (std::regex_search(fio, std::regex("[a-zA-Z0-9]"))) {
+            // Если нашли латиницу или цифры — выдаем ошибку
             res.status = 400;
-            res.set_content("ФИО должно содержать только кириллицу и казахские буквы", "text/plain; charset=utf-8");
+            res.set_content("Ошибка: только кириллица", "text/plain; charset=utf-8");
             return;
         }
 

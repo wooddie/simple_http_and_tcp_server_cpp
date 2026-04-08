@@ -29,9 +29,9 @@
 
     <h2 data-key="reg_title">Тіркелу</h2>
     <form id="regForm">
-        <input name="iin" data-key="iin_place">
-        <input name="fio" data-key="fio_place">
-        <input name="phone" data-key="phone_place">
+        <input name="iin" type="text" inputmode="numeric" pattern="\d{12}" maxlength="12" data-key="iin_place">
+        <input name="fio" data-key="fio_place" pattern="^[А-Яа-яЁёӘәІіҢңҒғҮүҰұҚқӨөҺһ\s]+$">
+        <input name="phone" id="phone" data-key="phone_place" placeholder="+7-(___)-___-__-__">
         <input name="email" type="email" data-key="email_place">
         <input name="password" type="password" data-key="pass_reg_place">
         <div id="regError" class="error-box"></div>
@@ -39,7 +39,8 @@
     </form>
 </div>
 
-<script src="scripts/index_scropt.js"></script>
+<script src="https://unpkg.com/imask"></script>
+<script src="scripts/index_script.js"></script>
 
 </body>
 </html>

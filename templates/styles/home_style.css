@@ -1,153 +1,367 @@
+/* ─── Reset & Base ─────────────────────────────────────────── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 :root {
-    --bg-color: #f4f7f6;
-    --primary: #2c3e50;
-    --pending: #f1c40f;
-    --approved: #2ecc71;
-    --rejected: #e74c3c;
+    --purple-light: #EEEDFE;
+    --purple-mid:   #7F77DD;
+    --purple-main:  #534AB7;
+    --purple-dark:  #3C3489;
+
+    --amber-light:  #FAEEDA;
+    --amber-text:   #854F0B;
+    --teal-light:   #E1F5EE;
+    --teal-text:    #0F6E56;
+    --red-light:    #FCEBEB;
+    --red-text:     #A32D2D;
+
+    --bg:           #f4f6fb;
+    --surface:      #ffffff;
+    --border:       rgba(0, 0, 0, 0.08);
+    --text-primary: #1a1a2e;
+    --text-muted:   #6b7280;
+    --text-hint:    #9ca3af;
+
+    --radius-md: 8px;
+    --radius-lg: 14px;
 }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    max-width: 390px; /* Строго по ТЗ */
-    margin: auto;
-    background-color: var(--bg-color);
-    color: #333;
+    background: var(--bg);
+    color: var(--text-primary);
     line-height: 1.5;
+    min-height: 100vh;
 }
 
-/* Навигация */
-.nav {
+/* ─── App Shell ─────────────────────────────────────────────── */
+.app {
+    max-width: 390px;
+    margin: 0 auto;
+    min-height: 100vh;
     display: flex;
+    flex-direction: column;
+}
+
+/* ─── Header & Nav ──────────────────────────────────────────── */
+.header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px 12px;
     position: sticky;
     top: 0;
-    background: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     z-index: 100;
 }
 
-.nav a {
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text-primary);
+}
+
+.logo span {
+    color: var(--purple-main);
+}
+
+.lang-btns {
+    display: flex;
+    gap: 6px;
+}
+
+.lang-btn {
+    padding: 4px 11px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.15s;
+}
+
+.lang-btn.active {
+    background: var(--purple-light);
+    color: var(--purple-main);
+    border-color: var(--purple-mid);
+}
+
+.lang-btn:hover:not(.active) {
+    background: var(--bg);
+}
+
+/* Nav */
+.nav {
+    display: flex;
+    gap: 4px;
+    background: var(--bg);
+    border-radius: var(--radius-lg);
+    padding: 4px;
+}
+
+.nav-btn {
     flex: 1;
+    padding: 8px 4px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--text-muted);
     text-align: center;
-    padding: 15px 0;
-    text-decoration: none;
-    color: var(--primary);
-    font-weight: bold;
-    /*font-size: 14px;*/
+    transition: all 0.15s;
 }
 
-.nav a:hover {
-    background: #f9f9f9;
+.nav-btn.active {
+    background: var(--surface);
+    color: var(--purple-main);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
 
-/* Контейнеры */
-section {
+.nav-btn:hover:not(.active) {
+    color: var(--text-primary);
+    background: rgba(255,255,255,0.6);
+}
+
+/* ─── Content Area ──────────────────────────────────────────── */
+.content {
+    padding: 16px;
+    flex: 1;
+}
+
+.section {
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    animation: fadeUp 0.25s ease-out;
+}
+
+.section.visible {
+    display: flex;
+}
+
+.section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding-bottom: 4px;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Card ──────────────────────────────────────────────────── */
+.card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
     padding: 20px;
 }
 
-h2, h3 {
-    color: var(--primary);
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 10px;
+.card-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-hint);
+    margin-bottom: 18px;
 }
 
-/* Форма заказа */
-.order-form {
-    background: white;
-    padding: 15px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+/* ─── Form Elements ─────────────────────────────────────────── */
+label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 7px;
+    margin-top: 16px;
 }
 
-select, textarea {
-    width: 100%;
-    box-sizing: border-box; /* Чтобы padding не раздувал ширину */
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 12px;
-    font-size: 16px;
-    margin-bottom: 15px;
+label:first-of-type {
+    margin-top: 0;
 }
 
-/* Большое поле ввода */
+select,
 textarea {
-    min-height: 150px; /* Минимум 150px высоты */
-    resize: vertical; /* Позволяем тянуть вниз */
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 11px 13px;
+    font-size: 15px;
+    background: #fafafa;
+    color: var(--text-primary);
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-button {
+select:focus,
+textarea:focus {
+    border-color: var(--purple-mid);
+    box-shadow: 0 0 0 3px rgba(127, 119, 221, 0.15);
+    background: var(--surface);
+}
+
+textarea {
+    min-height: 140px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+/* Submit button */
+button[type="submit"] {
     width: 100%;
-    padding: 15px;
-    background: var(--primary);
+    padding: 14px;
+    background: var(--purple-main);
     color: white;
     border: none;
-    border-radius: 8px;
-    font-weight: bold;
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
-    transition: opacity 0.2s;
+    margin-top: 20px;
+    transition: background 0.15s, transform 0.1s;
 }
 
-button:hover {
-    opacity: 0.9;
+button[type="submit"]:hover {
+    background: var(--purple-dark);
 }
 
-/* Адаптивные карточки запросов */
+button[type="submit"]:active {
+    transform: scale(0.98);
+}
+
+/* ─── Request Cards ─────────────────────────────────────────── */
 .request-card {
-    background: white;
-    padding: 15px;
-    margin: 15px 0;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    word-wrap: break-word; /* Перенос длинных слов */
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    word-wrap: break-word;
     overflow-wrap: break-word;
 }
 
-.request-card strong {
-    display: block;
-    margin-bottom: 8px;
+/* Colored left stripe */
+.request-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+}
+
+.status-pending::before  { background: #FAC775; }
+.status-approved::before { background: #5DCAA5; }
+.status-rejected::before { background: #F09595; }
+
+/* Card meta row */
+.request-card .meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.request-card .type-badge {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg);
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+}
+
+.request-card .status-badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.badge-pending  { background: var(--amber-light); color: var(--amber-text); }
+.badge-approved { background: var(--teal-light);  color: var(--teal-text); }
+.badge-rejected { background: var(--red-light);   color: var(--red-text); }
+
+.request-card .prompt {
     font-size: 14px;
-    color: #666;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    white-space: pre-line;
 }
 
-.request-card p {
-    margin: 10px 0;
-    font-size: 16px;
-    white-space: pre-line; /* Сохраняем переносы строк */
+.request-card .date {
+    font-size: 12px;
+    color: var(--text-hint);
 }
 
-.request-card i {
+/* ─── Account / Exit Section ────────────────────────────────── */
+.account-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--purple-light);
+    color: var(--purple-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+    flex-shrink: 0;
+}
+
+.account-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.account-email {
     font-size: 13px;
-    font-style: normal;
-    font-weight: bold;
+    color: var(--text-muted);
 }
 
-/* Индикация статусов */
-.status-pending {
-    border-left: 6px solid var(--pending);
+.exit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
 }
 
-.status-approved {
-    border-left: 6px solid var(--approved);
-}
-
-.status-rejected {
-    border-left: 6px solid var(--rejected);
-}
-
-/* Анимация */
-.container {
-    opacity: 0;
-    /* forwards заставит элемент остаться видимым (opacity: 1) после конца анимации */
-    animation: fadeIn 1.2s ease-out forwards;
-    margin: auto; /* чтобы max-width 390px работал по центру */
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(30px); /* Увеличил замах для наглядности */
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.exit-btn:hover {
+    background: var(--bg);
+    color: var(--text-primary);
 }
