@@ -1,0 +1,129 @@
+:root {
+    --primary: #2c3e50;
+    --accent: #3498db;
+    --bg: #f4f7f6;
+    --error: #e74c3c;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--bg);
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 390px;
+    background: white;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    box-sizing: border-box;
+}
+
+h1 {
+    text-align: center;
+    color: var(--primary);
+    font-size: 28px;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #7f8c8d;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+h2 {
+    font-size: 18px;
+    color: var(--primary);
+    margin-top: 20px;
+    border-left: 4px solid var(--accent);
+    padding-left: 10px;
+    margin-bottom: 15px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+button {
+    padding: 14px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 5px;
+}
+
+button:hover {
+    background-color: #34495e;
+}
+
+.btn-lang {
+    width: auto;
+    padding: 5px 10px;
+    font-size: 12px;
+    background: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+    margin-left: 5px;
+}
+
+.error-box {
+    color: var(--error);
+    font-size: 13px;
+    min-height: 18px;
+    white-space: pre-line;
+}
+
+hr {
+    margin: 30px 0;
+    border: 0;
+    border-top: 1px solid #eee;
+}
+
+/* Анимация */
+.container {
+    opacity: 0;
+    /* forwards заставит элемент остаться видимым (opacity: 1) после конца анимации */
+    animation: fadeIn 1.2s ease-out forwards;
+    margin: auto; /* чтобы max-width 390px работал по центру */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px); /* Увеличил замах для наглядности */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

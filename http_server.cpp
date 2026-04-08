@@ -218,11 +218,21 @@ int main() {
         sqlite3_bind_int(stmt, 1, std::stoi(user_id));
 
         while (sqlite3_step(stmt) == SQLITE_ROW) {
+            std::string s = (char *) sqlite3_column_text(stmt, 2); // 'pending', 'approved', etc.
+            std::string displayStatus = (s == "pending")
+                                            ? "Жаңа (Новый)"
+                                            : (s == "approved")
+                                                  ? "Мақұлданды"
+                                                  : "Қабылданбады";
             std::string t = (char *) sqlite3_column_text(stmt, 0);
             std::string p = (char *) sqlite3_column_text(stmt, 1);
-            std::string s = (char *) sqlite3_column_text(stmt, 2);
 
-            requests += "<p>" + t + " | " + p + " | " + s + "</p>";
+            // Добавляем HTML-обертку с классом для CSS
+            requests += "<div class='request-card status-" + s + "'>";
+            requests += "<strong>" + t + "</strong><br>";
+            requests += "<span>" + p + "</span><br>";
+            requests += "<i>Статус: " + s + "</i>";
+            requests += "</div>";
         }
 
         sqlite3_finalize(stmt);
@@ -256,7 +266,7 @@ int main() {
         // Если всё ок — пишем в базу
         sqlite3_stmt *stmt;
         const char *sql = "INSERT INTO generation_requests(user_id, content_type, prompt_text, status, created_at) "
-                "VALUES (?, ?, ?, 'новый', datetime('now'))";
+                "VALUES (?, ?, ?, 'pending', datetime('now'))";
 
         if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
             sqlite3_bind_int(stmt, 1, std::stoi(user_id));
@@ -273,6 +283,8 @@ int main() {
     });
 
     std::cout << "http://localhost:8080\n";
+    server.set_mount_point("/styles", "../templates/styles");
+    server.set_mount_point("/scripts", "../templates/scripts");
     server.listen("0.0.0.0", 8080);
 
     sqlite3_close(db);

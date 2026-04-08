@@ -1,29 +1,45 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Auth</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroArt — Auth</title>
+    <link rel="stylesheet" href="styles/index_style.css">
 </head>
 <body>
-<div style="max-width: 300px; margin: auto;">
-  <h2>Вход</h2>
-  <form action="/login" method="POST">
-    <input name="email" type="email" placeholder="Почта" required><br><br>
-    <input name="password" type="password" placeholder="Пароль" required><br><br>
-    <button type="submit">Войти</button>
-  </form>
 
-  <hr>
+<div class="container">
+    <div class="lang-switch" style="text-align: right; margin-bottom: 10px;">
+        <button onclick="setLanguage('kz')" class="btn-lang">KZ</button>
+        <button onclick="setLanguage('ru')" class="btn-lang">RU</button>
+    </div>
 
-  <h2>Регистрация</h2>
-  <form action="/register" method="POST">
-    <input name="iin" placeholder="ИИН"><br><br>
-    <input name="fio" placeholder="ФИО"><br><br>
-    <input name="phone" placeholder="Телефон"><br><br>
-    <input name="email" type="email" placeholder="Почта"><br><br>
-    <input name="password" type="password" placeholder="Пароль"><br><br>
-    <button type="submit">Зарегистрироваться</button>
-  </form>
+    <h1 data-key="main_title">NeuroArt</h1>
+    <p class="subtitle" data-key="subtitle">Жасанды интеллект әлеміне қош келдіңіз</p>
+
+    <h2 data-key="login_title">Кіру</h2>
+    <form id="loginForm">
+        <input name="email" type="email" data-key="email_place" placeholder="Email" aria-label="Email" required>
+        <input name="password" type="password" data-key="pass_place" placeholder="Password" aria-label="Password" required>
+        <div id="loginError" class="error-box" style="color: red;"></div>
+        <button type="submit" data-key="btn_login">Жүйеге кіру</button>
+    </form>
+
+    <hr>
+
+    <h2 data-key="reg_title">Тіркелу</h2>
+    <form id="regForm">
+        <input name="iin" data-key="iin_place">
+        <input name="fio" data-key="fio_place">
+        <input name="phone" data-key="phone_place">
+        <input name="email" type="email" data-key="email_place">
+        <input name="password" type="password" data-key="pass_reg_place">
+        <div id="regError" class="error-box"></div>
+        <button type="submit" style="background-color: var(--accent);" data-key="btn_reg">Тіркелу</button>
+    </form>
 </div>
+
+<script src="scripts/index_scropt.js"></script>
+
 </body>
 </html>

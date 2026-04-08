@@ -2,30 +2,57 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Мой кабинет</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>НейроӨнер — Кабинет</title>
+    <link rel="stylesheet" href="styles/home_style.css">
 </head>
 <body>
 
-<h1>Кабинет</h1>
+<div class="container">
+    <div class="lang-switch" style="text-align: right; padding: 10px; background: #fff;">
+        <button onclick="setLanguage('kz')"
+                style="width: auto; padding: 5px 12px; cursor: pointer; border-radius: 4px; border: 1px solid #ccc;">KZ
+        </button>
+        <button onclick="setLanguage('ru')"
+                style="width: auto; padding: 5px 12px; cursor: pointer; border-radius: 4px; border: 1px solid #ccc;">RU
+        </button>
+    </div>
 
-<form action="/generate" method="POST">
-    <input type="hidden" name="user_id" value="{{user_id}}">
+    <div class="nav">
+        <a href="#new" data-key="nav_create">➕ Тапсырыс</a>
+        <a href="#list" data-key="nav_projects">📂 Жобалар</a>
+        <a href="/" data-key="nav_exit">🚪 Шығу</a>
+    </div>
 
-    <select name="type">
-        <option value="Изображение">Изображение</option>
-        <option value="Видео">Видео</option>
-    </select><br><br>
+    <section id="new">
+        <h2 data-key="new_order">Жаңа тапсырыс</h2>
+        <div class="order-form">
+            <form action="/generate" method="POST">
+                <input type="hidden" name="user_id" value="{{user_id}}">
 
-    <label>
-        <textarea name="prompt"></textarea>
-    </label><br><br>
+                <label for="type" data-key="type_label">Контент түрі:</label>
+                <select name="type" id="type">
+                    <option value="Изображение" data-key="opt_img">Сурет</option>
+                    <option value="Видео" data-key="opt_vid">Бейне</option>
+                </select>
 
-    <button type="submit">Создать</button>
-</form>
+                <label for="prompt" data-key="prompt_label">Сипаттама (Промпт):</label>
+                <textarea name="prompt" id="prompt" data-key="prompt_placeholder" required></textarea>
 
-<h3>Ваши запросы:</h3>
+                <button type="submit" data-key="btn_send">Жіберу</button>
+            </form>
+        </div>
+    </section>
 
-{{requests}}
+    <section id="list">
+        <h3 data-key="projects_title">Менің жобаларым</h3>
+        <div class="list-container">
+            {{requests}}
+        </div>
+    </section>
+</div>
+
+<script src="scripts/home_script.js"></script>
 
 </body>
 </html>
