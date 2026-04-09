@@ -213,16 +213,13 @@ int main() {
         sqlite3_bind_int(stmt, 1, std::stoi(user_id));
 
         while (sqlite3_step(stmt) == SQLITE_ROW) {
-            // 1. Получаем данные из БД
             std::string type   = (const char *) sqlite3_column_text(stmt, 0);
             std::string prompt = (const char *) sqlite3_column_text(stmt, 1);
-            std::string status = (const char *) sqlite3_column_text(stmt, 2); // 'pending', 'approved', 'rejected'
+            std::string status = (const char *) sqlite3_column_text(stmt, 2);
 
-            // 2. Локализация статуса для отображения пользователю
             std::string statusText = (status == "pending") ? "Жаңа" :
                                      (status == "approved") ? "Мақұлданды" : "Қабылданбады";
 
-            // 3. Формируем карточку под новый CSS
             requests += "<div class='request-card status-" + status + "'>";
             requests += "  <div class='meta'>";
             requests += "    <span class='type-badge'>" + type + "</span>";
@@ -248,21 +245,18 @@ int main() {
         std::string prompt = req.get_param_value("prompt");
         std::string type = req.get_param_value("type");
 
-        // 1. Валидация промпта (длина 20-500)
         if (prompt.length() < 20 || prompt.length() > 500) {
             res.status = 400; // Обязательно ставим статус ошибки
             res.set_content("Промпт должен содержать от 20 до 500 символов", "text/plain; charset=utf-8");
             return;
         }
 
-        // 2. Проверка на пустоту типа контента
         if (type != "Изображение" && type != "Видео") {
             res.status = 400;
             res.set_content("Выберите тип контента (Изображение/Видео)", "text/plain; charset=utf-8");
             return;
         }
 
-        // Если всё ок — пишем в базу
         sqlite3_stmt *stmt;
         const char *sql = "INSERT INTO generation_requests(user_id, content_type, prompt_text, status, created_at) "
                 "VALUES (?, ?, ?, 'pending', datetime('now'))";
@@ -275,8 +269,6 @@ int main() {
             sqlite3_step(stmt);
             sqlite3_finalize(stmt);
 
-            // После успешного создания заказа лучше перенаправить
-            // или вернуть статус 201
             res.set_redirect("/home?user_id=" + user_id);
         }
     });
