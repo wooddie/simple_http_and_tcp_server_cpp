@@ -33,7 +33,6 @@ const translations = {
     }
 };
 
-// Функция выхода должна быть глобальной
 function logout(event) {
     event.preventDefault();
     localStorage.clear();
@@ -47,7 +46,6 @@ function showSection(id) {
     const target = document.getElementById(id);
     if (target) target.classList.add('visible');
 
-    // Исправлено: используем event.currentTarget более надежно
     if (event && event.currentTarget) {
         event.currentTarget.classList.add('active');
     }
@@ -68,7 +66,6 @@ function setLanguage(lang) {
         }
     });
 
-    // Обновляем статусы в карточках (ищем по классу .status-badge, как в C++ коде)
     document.querySelectorAll('.request-card').forEach(card => {
         const statusLabel = card.querySelector('.status-badge');
         if (statusLabel) {

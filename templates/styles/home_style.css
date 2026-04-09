@@ -1,4 +1,3 @@
-/* ─── Reset & Base ─────────────────────────────────────────── */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -33,28 +32,34 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: var(--bg);
     color: var(--text-primary);
-    line-height: 1.5;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
     min-height: 100vh;
+    margin: 0;
+    padding: 20px 0;
 }
 
-/* ─── App Shell ─────────────────────────────────────────────── */
 .app {
+    width: 100%;
     max-width: 390px;
-    margin: 0 auto;
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background: var(--surface);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(83, 74, 183, 0.08);
+    overflow: hidden;
+    animation: fadeIn 0.8s ease-out forwards;
 }
 
-/* ─── Header & Nav ──────────────────────────────────────────── */
 .header {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
-    padding: 16px 20px 12px;
+    padding: 24px 24px 16px;
     position: sticky;
     top: 0;
     z-index: 100;
-    animation: fadeUp 0.25s ease-out;
 }
 
 .header-top {
@@ -102,7 +107,6 @@ body {
     background: var(--bg);
 }
 
-/* Nav */
 .nav {
     display: flex;
     gap: 4px;
@@ -136,20 +140,18 @@ body {
     background: rgba(255, 255, 255, 0.6);
 }
 
-/* ─── Content Area ──────────────────────────────────────────── */
 .content {
-    padding: 20px 0px; /* 20px сверху/снизу, 16px по бокам */
+    padding: 24px;
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Отступ между секциями, если их будет несколько */
+    gap: 20px;
 }
 
 .section {
     display: none;
     flex-direction: column;
     gap: 12px;
-    animation: fadeUp 0.25s ease-out;
 }
 
 .section.visible {
@@ -163,10 +165,10 @@ body {
     padding-bottom: 4px;
 }
 
-@keyframes fadeUp {
+@keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(20px);
     }
     to {
         opacity: 1;
@@ -174,7 +176,6 @@ body {
     }
 }
 
-/* ─── Card ──────────────────────────────────────────────────── */
 .card {
     background: var(--surface);
     border-radius: var(--radius-lg);
@@ -191,7 +192,6 @@ body {
     margin-bottom: 18px;
 }
 
-/* ─── Form Elements ─────────────────────────────────────────── */
 label {
     display: block;
     font-size: 13px;
@@ -232,7 +232,6 @@ textarea {
     line-height: 1.6;
 }
 
-/* Submit button */
 button[type="submit"] {
     width: 100%;
     padding: 14px;
@@ -255,7 +254,6 @@ button[type="submit"]:active {
     transform: scale(0.98);
 }
 
-/* ─── Request Cards ─────────────────────────────────────────── */
 .request-card {
     background: var(--surface);
     border-radius: var(--radius-lg);
@@ -267,7 +265,6 @@ button[type="submit"]:active {
     overflow-wrap: break-word;
 }
 
-/* Colored left stripe */
 .request-card::before {
     content: '';
     position: absolute;
@@ -289,7 +286,6 @@ button[type="submit"]:active {
     background: #F09595;
 }
 
-/* Card meta row */
 .request-card .meta {
     display: flex;
     justify-content: space-between;
@@ -341,7 +337,6 @@ button[type="submit"]:active {
     color: var(--text-hint);
 }
 
-/* ─── Account / Exit Section ────────────────────────────────── */
 .account-row {
     display: flex;
     align-items: center;
@@ -390,4 +385,14 @@ button[type="submit"]:active {
 
 .exit-link:hover {
     background: var(--red-light);
+}
+
+@media (max-width: 420px) {
+    .app {
+        margin: 0;
+        max-width: 100%;
+        border-radius: 0;
+        border: none;
+        min-height: 100vh;
+    }
 }

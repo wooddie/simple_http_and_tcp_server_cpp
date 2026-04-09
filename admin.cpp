@@ -14,7 +14,6 @@ class AdminPanel : public QWidget {
     QStandardItemModel *model;
     QTableView *view;
     QNetworkAccessManager *manager;
-    // Выносим кнопки в поля класса для доступа из других методов
     QPushButton *btnApprove;
     QPushButton *btnReject;
 
@@ -36,7 +35,6 @@ public:
         btnReject = new QPushButton("Отклонить ❌");
         auto *btnRefresh = new QPushButton("Обновить 🔄");
 
-        // По умолчанию кнопки выключены, пока ничего не выбрано
         btnApprove->setEnabled(false);
         btnReject->setEnabled(false);
 
@@ -49,10 +47,8 @@ public:
         layout->addWidget(view);
         layout->addLayout(btnLayout);
 
-        // Логика блокировки кнопок при выборе строки (ТЗ 3.3)
         connect(view->selectionModel(), &QItemSelectionModel::currentRowChanged, [this](const QModelIndex &current) {
             if (!current.isValid()) return;
-            // Проверяем текст в колонке "Статус" (индекс 5)
             QString status = model->item(current.row(), 5)->data(Qt::UserRole).toString();
             bool isNew = (status == "pending");
             btnApprove->setEnabled(isNew);
@@ -78,7 +74,6 @@ public:
                     QJsonObject obj = v.toObject();
                     QString rawStatus = obj["status"].toString();
 
-                    // Красивое отображение для модератора
                     QString displayStatus = (rawStatus == "pending") ? "⏳ Жаңа (Новый)" :
                                             (rawStatus == "approved") ? "✅ Мақұлданды (Одобрено)" : "❌ Қабылданбады (Отклонено)";
 
@@ -91,7 +86,6 @@ public:
                         new QStandardItem(displayStatus)
                     };
 
-                    // Сохраняем "чистый" статус в скрытые данные ячейки для логики кнопок
                     row.last()->setData(rawStatus, Qt::UserRole);
                     model->appendRow(row);
                 }
@@ -114,7 +108,7 @@ public:
 
         QNetworkReply *reply = manager->post(request, params.toString(QUrl::FullyEncoded).toUtf8());
         connect(reply, &QNetworkReply::finished, [this, reply]() {
-            loadData(); // Мгновенное обновление таблицы
+            loadData();
             reply->deleteLater();
         });
     }
@@ -127,4 +121,4 @@ int main(int argc, char *argv[]) {
     return a.exec();
 }
 
-#include "admin.moc" // Имя совпадает с admin.cpp
+#include "admin.moc"

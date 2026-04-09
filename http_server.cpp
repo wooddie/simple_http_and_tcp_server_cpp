@@ -86,7 +86,6 @@ int main() {
     server.Get("/get_messages", [db](const httplib::Request &req, httplib::Response &res) {
         json j_list = json::array();
         sqlite3_stmt *stmt;
-        // Соединяем таблицы, чтобы видеть имя юзера вместо его ID
         const char *sql = "SELECT gr.id, gr.created_at, u.fio, gr.content_type, gr.prompt_text, gr.status "
                 "FROM generation_requests gr JOIN users u ON gr.user_id = u.id;";
 
@@ -129,14 +128,12 @@ int main() {
         std::string email = req.get_param_value("email");
         std::string password = req.get_param_value("password");
 
-        // 1. Валидация ИИН (ровно 12 цифр)
         if (!std::regex_match(iin, std::regex("^\\d{12}$"))) {
             res.status = 400;
             res.set_content("ИИН должен состоять ровно из 12 цифр", "text/plain; charset=utf-8");
             return;
         }
 
-        // 2. Валидация ФИО (Кириллица + казахские буквы)
         if (std::regex_search(fio, std::regex("[a-zA-Z0-9]"))) {
             // Если нашли латиницу или цифры — выдаем ошибку
             res.status = 400;
@@ -144,21 +141,18 @@ int main() {
             return;
         }
 
-        // 3. Валидация телефона +7(7XX)-XXX-XX-XX
         if (!std::regex_match(phone, std::regex("^\\+7\\(7\\d{2}\\)-\\d{3}-\\d{2}-\\d{2}$"))) {
             res.status = 400;
             res.set_content("Формат телефона: +7(7XX)-XXX-XX-XX", "text/plain; charset=utf-8");
             return;
         }
 
-        // 4. Длина пароля
         if (password.length() < 8) {
             res.status = 400;
             res.set_content("Пароль должен быть не менее 8 символов", "text/plain; charset=utf-8");
             return;
         }
 
-        // Если всё ок — хешируем и сохраняем
         std::string pass_hash = sha256(password);
 
         sqlite3_stmt *stmt;
@@ -175,7 +169,7 @@ int main() {
                 res.set_content("OK <a href='/'>login</a>", "text/html");
             } else {
                 res.status = 400;
-                res.set_content("Ошибка БД (возможно, ИИН уже зарегистрирован)", "text/plain; charset=utf-8");
+                res.set_content("reg_error", "text/plain");
             }
             sqlite3_finalize(stmt);
         }
@@ -196,7 +190,8 @@ int main() {
             int id = sqlite3_column_int(stmt, 0);
             res.set_redirect("../home?user_id=" + std::to_string(id));
         } else {
-            res.set_content("bad login", "text/html");
+            res.status = 401;
+            res.set_content("auth_error", "text/plain");
         }
 
         sqlite3_finalize(stmt);

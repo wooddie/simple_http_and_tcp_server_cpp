@@ -19,8 +19,10 @@
 
     <h2 data-key="login_title">Кіру</h2>
     <form id="loginForm">
-        <input name="email" type="email" data-key="email_place" placeholder="Email" required>
-        <input name="password" type="password" data-key="pass_place" placeholder="Password" required>
+        <label>
+            <input name="email" type="email" data-key="email_place" placeholder="Email" required>
+            <input name="password" type="password" data-key="pass_place" placeholder="Password" required>
+        </label>
         <div id="loginError" class="error-box"></div>
         <button type="submit" data-key="btn_login">Жүйеге кіру</button>
     </form>
@@ -29,11 +31,13 @@
 
     <h2 data-key="reg_title">Тіркелу</h2>
     <form id="regForm">
-        <input name="iin" type="text" inputmode="numeric" pattern="\d{12}" maxlength="12" data-key="iin_place">
-        <input name="fio" data-key="fio_place" pattern="^[А-Яа-яЁёӘәІіҢңҒғҮүҰұҚқӨөҺһ\s]+$">
-        <input name="phone" id="phone" data-key="phone_place">
-        <input name="email" type="email" data-key="email_place">
-        <input name="password" type="password" data-key="pass_reg_place">
+        <label>
+            <input name="iin" type="text" inputmode="numeric" pattern="\d{12}" maxlength="12" data-key="iin_place">
+            <input name="fio" data-key="fio_place" pattern="^[А-Яа-яЁёӘәІіҢңҒғҮүҰұҚқӨөҺһ\s]+$">
+            <input name="phone" id="phone" data-key="phone_place">
+            <input name="email" type="email" data-key="email_place">
+            <input name="password" type="password" data-key="pass_reg_place">
+        </label>
         <div id="regError" class="error-box"></div>
         <button type="submit" data-key="btn_reg">Тіркелу</button>
     </form>

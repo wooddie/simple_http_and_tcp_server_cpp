@@ -14,6 +14,8 @@ const translations = {
         btn_reg: "Тіркелу",
         loading: "Жүктеу...",
         reg_success: "Тіркелу сәтті аяқталды! Енді жүйеге кіріңіз.",
+        auth_error: "Қате логин немесе құпия сөз",
+        reg_error: "Тіркелу кезінде қате кетті",
         conn_error: "Сервермен байланыс үзілді."
     },
     ru: {
@@ -31,6 +33,8 @@ const translations = {
         btn_reg: "Зарегистрироваться",
         loading: "Загрузка...",
         reg_success: "Регистрация прошла успешно! Теперь войдите.",
+        auth_error: "Неверный логин или пароль",
+        reg_error: "Ошибка при регистрации",
         conn_error: "Связь с сервером прервана."
     }
 };
@@ -77,7 +81,9 @@ async function handleForm(formId, endpoint, errorDivId) {
                     e.target.reset();
                 }
             } else {
-                errorDiv.innerText = await response.text();
+                const serverResponse = await response.text();
+
+                errorDiv.innerText = translations[lang][serverResponse] || serverResponse;
             }
         } catch (err) {
             errorDiv.innerText = translations[lang].conn_error;
@@ -88,7 +94,6 @@ async function handleForm(formId, endpoint, errorDivId) {
     };
 }
 
-// Инициализация
 document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('selectedLang') || 'kz';
     setLanguage(savedLang);
