@@ -80,3 +80,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('selectedLang') || 'kz';
     setLanguage(savedLang);
 });
+
+const themeBtn = document.getElementById('theme-toggle');
+
+function changeTheme(btn) {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+
+    btn.textContent = isDark ? 'light' : 'dark';
+}
+
+if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+    if (themeBtn) themeBtn.textContent = 'light';
+}

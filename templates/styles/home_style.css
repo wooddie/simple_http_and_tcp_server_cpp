@@ -28,6 +28,33 @@
     --radius-lg: 14px;
 }
 
+.dark-mode {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --border: rgba(255, 255, 255, 0.1);
+    --text-primary: #f8fafc;
+    --text-muted: #94a3b8;
+    --text-hint: #64748b;
+
+    /* Можно также приглушить основные цвета для темной темы */
+    --purple-light: rgba(83, 74, 183, 0.2);
+    --purple-main: #818cf8;
+}
+
+.dark-mode select,
+.dark-mode textarea {
+    background: var(--bg); /* или var(--surface) */
+    color: var(--text-primary);
+    border-color: var(--border);
+}
+
+/* Чтобы при фокусе они тоже выглядели хорошо */
+.dark-mode select:focus,
+.dark-mode textarea:focus {
+    background: var(--surface);
+    border-color: var(--purple-main);
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: var(--bg);
