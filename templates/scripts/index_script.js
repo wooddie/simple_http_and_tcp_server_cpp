@@ -97,17 +97,15 @@ async function handleForm(formId, endpoint, errorDivId) {
 document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('selectedLang') || 'kz';
     setLanguage(savedLang);
+
     handleForm('loginForm', '/login', 'loginError');
     handleForm('regForm', '/register', 'regError');
 
     const phoneInput = document.getElementById('phone');
-
     if (phoneInput) {
-        const maskOptions = {
+        IMask(phoneInput, {
             mask: '+{7}(000)-000-00-00',
             lazy: false
-        };
-
-        const mask = IMask(phoneInput, maskOptions);
+        });
     }
 });
