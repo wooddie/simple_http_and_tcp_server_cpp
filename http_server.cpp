@@ -1,21 +1,53 @@
 #define CPPHTTPLIB_NO_EXCEPTIONS
 #include "lib/httplib.h"
-#include <openssl/sha.h>
+#include <openssl/evp.h>
 #include "sqlite3.h"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <fstream>
-#include <../lib/json-develop/single_include/nlohmann/json.hpp> // Популярная библиотека для JSON
+#include <../lib/json-develop/single_include/nlohmann/json.hpp>
 using json = nlohmann::json;
+
+// ---------- GET COOKIE ----------
+std::string getCookie(const httplib::Request &req, std::string key) {
+    if (!req.has_header("Cookie")) { return ""; }
+
+    std::string cookie = req.get_header_value("Cookie");
+    std::stringstream ss(cookie);
+    std::string item;
+
+    while (std::getline(ss, item, ';')) {
+        size_t pos = item.find('=');
+        if (pos != std::string::npos) {
+            std::string k = item.substr(0, pos);
+            std::string v = item.substr(pos + 1);
+
+            // убираем пробелы
+            while (!k.empty() && k[0] == ' ') k.erase(0, 1);
+
+            if (k == key) return v;
+        }
+    }
+    return "";
+}
+
 
 // ---------- SHA256 ----------
 std::string sha256(const std::string &str) {
-    unsigned char hash[SHA256_DIGEST_LENGTH];
-    SHA256((unsigned char *) str.c_str(), str.size(), hash);
+    EVP_MD_CTX* context = EVP_MD_CTX_new();
+    const EVP_MD* md = EVP_sha256();
+    unsigned char hash[EVP_MAX_MD_SIZE];
+    unsigned int lengthOfHash = 0;
+
+    EVP_DigestInit_ex(context, md, nullptr);
+    EVP_DigestUpdate(context, str.c_str(), str.size());
+    EVP_DigestFinal_ex(context, hash, &lengthOfHash);
+    EVP_MD_CTX_free(context);
+
 
     std::stringstream ss;
-    for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+    for (int i = 0; i < lengthOfHash; i++) {
         ss << std::hex << std::setw(2) << std::setfill('0') << (int) hash[i];
     }
     return ss.str();
@@ -141,7 +173,7 @@ int main() {
             return;
         }
 
-        if (!std::regex_match(phone, std::regex("^\\+7\\(7\\d{2}\\)-\\d{3}-\\d{2}-\\d{2}$"))) {
+        if (!std::regex_match(phone, std::regex("^\\+7\\(\\d{3}\\)-\\d{3}-\\d{2}-\\d{2}$"))) {
             res.status = 400;
             res.set_content("Формат телефона: +7(7XX)-XXX-XX-XX", "text/plain; charset=utf-8");
             return;
@@ -168,6 +200,9 @@ int main() {
             if (sqlite3_step(stmt) == SQLITE_DONE) {
                 res.set_content("OK <a href='/'>login</a>", "text/html");
             } else {
+                // ВЫВОДИМ ОШИБКУ В КОНСОЛЬ СЕРВЕРА
+                std::cerr << "SQL error: " << sqlite3_errmsg(db) << std::endl;
+
                 res.status = 400;
                 res.set_content("reg_error", "text/plain");
             }
@@ -188,7 +223,9 @@ int main() {
 
         if (sqlite3_step(stmt) == SQLITE_ROW) {
             int id = sqlite3_column_int(stmt, 0);
-            res.set_redirect("../home?user_id=" + std::to_string(id));
+            std::string userIdStr = std::to_string(id);
+            res.set_header("Set-Cookie", "session_id=" + userIdStr + "; Path=/; HttpOnly");
+            res.set_redirect("/home");
         } else {
             res.status = 401;
             res.set_content("auth_error", "text/plain");
@@ -199,49 +236,102 @@ int main() {
 
     // HOME
     server.Get("/home", [db](const httplib::Request &req, httplib::Response &res) {
-        std::string user_id = req.get_param_value("user_id");
+        std::string user_id = "";
 
+        // 1. Пытаемся достать user_id из куки
+        if (req.has_header("Cookie")) {
+            std::string cookie_header = req.get_header_value("Cookie");
+
+            // Простой парсинг куки "session_id=X"
+            size_t pos = cookie_header.find("session_id=");
+            if (pos != std::string::npos) {
+                user_id = cookie_header.substr(pos + 11); // 11 - это длина "session_id="
+                // Если в куке есть другие параметры после ID, отрезаем их до первой точки с запятой
+                size_t end_pos = user_id.find(';');
+                if (end_pos != std::string::npos) {
+                    user_id = user_id.substr(0, end_pos);
+                }
+            }
+        }
+
+        // 2. Если ID не найден или пустой — выгоняем на страницу логина
+        if (user_id.empty()) {
+            res.set_redirect("/");
+            return;
+        }
+
+        // 2.1 ПРОВЕРКА: Существует ли такой пользователь в базе?
+        sqlite3_stmt *check_stmt;
+        sqlite3_prepare_v2(db, "SELECT id FROM users WHERE id=?", -1, &check_stmt, nullptr);
+        sqlite3_bind_int(check_stmt, 1, std::stoi(user_id));
+
+        if (sqlite3_step(check_stmt) != SQLITE_ROW) {
+            // Если пользователя с таким ID нет — чистим куку и выгоняем
+            sqlite3_finalize(check_stmt);
+            res.set_header("Set-Cookie", "session_id=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT");
+            res.set_redirect("/");
+            return;
+        }
+        sqlite3_finalize(check_stmt);
+
+        // 3. Если мы здесь, значит user_id у нас из надежного источника (куки)
         std::string html = load_html("../templates/home.html");
-
-        std::string requests;
+        std::string requests_html = "";
 
         sqlite3_stmt *stmt;
-        sqlite3_prepare_v2(db,
-                           "SELECT content_type,prompt_text,status FROM generation_requests WHERE user_id=?",
-                           -1, &stmt, nullptr);
+        sqlite3_prepare_v2(db, "SELECT content_type, prompt_text, status FROM generation_requests WHERE user_id=?", -1,
+                           &stmt, nullptr);
 
+        // Безопасно привязываем ID из куки
         sqlite3_bind_int(stmt, 1, std::stoi(user_id));
 
         while (sqlite3_step(stmt) == SQLITE_ROW) {
-            std::string type   = (const char *) sqlite3_column_text(stmt, 0);
+            std::string type = (const char *) sqlite3_column_text(stmt, 0);
             std::string prompt = (const char *) sqlite3_column_text(stmt, 1);
             std::string status = (const char *) sqlite3_column_text(stmt, 2);
 
-            std::string statusText = (status == "pending") ? "Жаңа" :
-                                     (status == "approved") ? "Мақұлданды" : "Қабылданбады";
-
-            requests += "<div class='request-card status-" + status + "'>";
-            requests += "  <div class='meta'>";
-            requests += "    <span class='type-badge'>" + type + "</span>";
-            requests += "    <span class='status-badge badge-" + status + "'>" + statusText + "</span>";
-            requests += "  </div>";
-            requests += "  <div class='prompt'>" + prompt + "</div>";
-            // Если в БД есть колонка с датой, можно добавить и её:
-            // requests += "  <div class='date'>Бүгін, 12:40</div>";
-            requests += "</div>";
+            requests_html += "<div class='request-card status-" + status + "'>";
+            requests_html += "  <div class='meta'>";
+            requests_html += "    <span class='type-badge'>" + type + "</span>";
+            requests_html += "    <span class='status-badge' data-key='status_" + status + "'>" + status + "</span>";
+            requests_html += "  </div>";
+            requests_html += "  <div class='prompt'>" + prompt + "</div>";
+            requests_html += "</div>";
         }
 
         sqlite3_finalize(stmt);
 
         replace_all(html, "{{user_id}}", user_id);
-        replace_all(html, "{{requests}}", requests);
+        replace_all(html, "{{requests}}", requests_html);
 
         res.set_content(html, "text/html");
     });
 
     // GENERATE
     server.Post("/generate", [db](const httplib::Request &req, httplib::Response &res) {
-        std::string user_id = req.get_param_value("user_id");
+        auto user = getCookie(req, "session_id");
+
+        if (user.empty()) {
+            res.set_redirect("/");
+            return;
+        }
+
+        sqlite3_stmt *stmt;
+        sqlite3_prepare_v2(db, "SELECT id FROM users WHERE id=?", -1, &stmt, nullptr);
+        sqlite3_bind_int(stmt, 1, std::stoi(user));
+
+        if (sqlite3_step(stmt) != SQLITE_ROW) {
+            sqlite3_finalize(stmt);
+
+            // чистим куку
+            res.set_header("Set-Cookie", "user_id=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT");
+            res.set_redirect("/");
+            return;
+        }
+
+        sqlite3_finalize(stmt);
+
+        std::string user_id = user;
         std::string prompt = req.get_param_value("prompt");
         std::string type = req.get_param_value("type");
 
@@ -257,7 +347,6 @@ int main() {
             return;
         }
 
-        sqlite3_stmt *stmt;
         const char *sql = "INSERT INTO generation_requests(user_id, content_type, prompt_text, status, created_at) "
                 "VALUES (?, ?, ?, 'pending', datetime('now'))";
 

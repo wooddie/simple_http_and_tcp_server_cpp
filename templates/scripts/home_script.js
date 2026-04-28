@@ -10,8 +10,7 @@ const translations = {
         projects_title: "Менің жобаларым",
         nav_create: "➕ Тапсырыс",
         nav_projects: "📂 Жобалар",
-        nav_exit: "🚪 Шығу",
-        status_pending: "Күйі: Күтілуде",
+        nav_exit: "🚪 Шығу",    status_pending: "Күйі: Күтілуде",
         status_approved: "Күйі: Мақұлданды",
         status_rejected: "Күйі: Қабылданбады"
     },

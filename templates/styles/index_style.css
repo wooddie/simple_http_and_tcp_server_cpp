@@ -26,21 +26,39 @@
     --text-muted: #94a3b8;
     --text-hint: #64748b;
 
-    /* Можно также приглушить основные цвета для темной темы */
     --purple-light: rgba(83, 74, 183, 0.2);
     --purple-main: #818cf8;
 }
 
 .dark-mode input {
-    background: var(--bg); /* или var(--surface) */
-    color: var(--text-primary);
-    border-color: var(--border);
+    background-color: var(--bg) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border) !important;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
-/* Чтобы при фокусе они тоже выглядели хорошо */
+.dark-mode input:-webkit-autofill,
+.dark-mode input:-webkit-autofill:hover,
+.dark-mode input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text-primary) !important;
+    -webkit-box-shadow: 0 0 0px 1000px var(--bg) inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.dark-mode input::placeholder {
+    color: var(--text-hint) !important;
+}
+
+.dark-mode #phone {
+    font-family: inherit !important;
+    letter-spacing: normal !important;
+}
+
 .dark-mode input:focus {
-    background: var(--surface);
-    border-color: var(--purple-main);
+    background-color: var(--surface) !important;
+    border-color: var(--purple-main) !important;
+    box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2) !important;
 }
 
 body {
